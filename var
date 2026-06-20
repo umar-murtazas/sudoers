@@ -1,0 +1,27 @@
+#!/bin/bash
+# declaration and referncing $
+name="umar"
+echo "$name"
+
+# braces {} and opeartions
+file="report"
+echo "with braces : ${file}.txt" # system will first expand the braces first so we will get report2026
+echo "wihtout braces : ${file.txt}"  # system will perform direct variable expansion on file and look for file2026 for brace expansion but there isnt any so we see nothing
+
+## brace -> (-) only change the output if unset or empty
+echo "${name:-Guest}" # printed name becuase it already had a value
+echo "${dif:-Guest}" # printed Guest cuz dif isnt defined
+
+## brace -> (=) overwrite only if empty or unset
+echo "$dif" # printed an empty line
+echo "${dif:=Guest}"
+echo "$dif" # got overwritten
+
+## brace -> (+) use this if var exists
+isit="ha"
+itis="nai"
+echo "${itis:+${isit}} :)"
+
+## brace -> (?) use this to raise errors if var is unset or empty
+echo "${name:?this is na error}" # this exists so error
+echo "${this:?this is na error}" # this doesnt exist so error
