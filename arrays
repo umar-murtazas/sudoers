@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# ------------------------------------------------------ arrays -----------------------------------------------------------------
+
+read -p "enter : " -a array # if we write -ap it will cause an error to separate them.
+array[2]="pineapple" # index 2 will always contain pineapple, its hardcoded.
+
+echo "${array[0]}"
+echo "${array[1]}"
+echo "${array[2]}" # display a specific element
+
+echo "list all elements as separate values : "${array[@]}"" # display all values an separate elements, we can loop thru
+echo "list all elements as combined values : "${array[*]}"" # display all values as one single string, if we loop [0] will have everything
+
+echo "size of an array with @ : "${#array[@]}"" # display length of an array
+echo "indices of an array : "${!array[@]}"" # display all indices of an array
+
+array+=("hehe") # only appends values, cant replace
+array[1]="one" # replace
+array[0]+="nai" # append something to an existing value
+
+unset array[2] # remove an element
+echo "after removing, appending, replacing, "${array[@]}""
+
+echo "------------------------------------------associative arrays-----------------------------------------------------"
+# store key value pairs like map, dict
+
+declare -A cars # onyl declare variables, like int cars,
+read -p "write name : " cars[name] # must specify the key along with array name else wouldnt work.
+
+read -p "write color : " cars[color] # enter the color
+
+cars["color"]="blue" # manual assignment
+
+echo "${!cars[@]}" # ! -> display keys only
+echo "${cars[@]}" # # -> display values only
+echo "${#cars[@]}" # display the length
