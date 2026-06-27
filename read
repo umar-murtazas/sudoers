@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# read data from a user
+echo "Enter your name : " name
+echo "Enter your class : " class
+echo "Enter your country : " country
+
+# take input from user
+read name class country  # if pressed enter then it would stop taking input after one line.
+
+#display them
+echo "name is : "$name""
+echo "class is : "$class""
+echo "country is : "$country""
+
+# easier convention for this is
+read -t 5 -sp "enter another : " name # -p means we can write a msg and name in one line here, -s whatever we type will not br shown unless we display it. # -t always expect a paramter afterwards and -sp  expect a string afterwards. -t means  timeout after n seconds, will display the output without the var that we read in this line.
+echo "Hello, $name" # both $name  and  \"$name\" would work without escape character litreal.
+
+# read -r,  -a
+read -p "enter input : " take # without -r if someone enters \ in the input it will move on the next line and keep reading input.
+echo "without -r, $take"  # but with this -r it will be printed as it is.
+
+read -rp "enter input : " take # with -r if someone enters \ in input it will print it as is, no new line will be initiated.
+echo "with -r, "$take""
