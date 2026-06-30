@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# environment variables ------------------------------------------------------------------------------------------------------
+name="ali"
+echo "$name"
+export name # could be used anywhere inside the subshell.
+bash -c 'echo "shell level is : $(echo $SHLVL)"' # parent shell will freeze and any code after will not execeute in this subshell.
+echo "nothing will be printed becuase its scope is local to its own shell $name" # result in an error # will get printed inside the parent shell.
+
+declare -p name # print the attribute and name + value of the variable, since we exported it so attribute
+
+# functions ------------------------------------------------------------------------------------------------------------------
+greet(){
+	echo "hello world"
+}
+greet  # call a function using its name only.
+
+# passing arguments.
+greet(){
+	echo "name : $1"
+	echo "name : $2"
+}
+greet ali ahmed # passed 2 arguments to the value.
+
+#other arguments include
+args(){
+	echo "view all arguments : "$@"" # show all arguments.
+	echo "view total number of arguments : "$#"" # show the number of arguments.
+	echo "all arguments as one string : "$*"" # show all arguments as a single string.
+}
+args ahmed ali afia arzu
+
+
+status() {
+	return 24 # 24 status code will be returned, only returns return code.
+}
+#status
+#echo $? # returns anything written inside
+status || echo "hello : $?"

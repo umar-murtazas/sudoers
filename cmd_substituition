@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+name="ali ahmed"
+#touch ${name} # this would create 2 files although it should only one.
+#touch "$name" # must enclose them with quotes to avoid these issues.
+
+#cmd substituition
+#echo "removing files $(find . -type f ! -perm /111 -exec rm -iv {} +)"
+
+echo "today is $(date)" #either use it directly
+list=$(ls -l)
+echo "$list" # or store it in a variable and run it
+
+# practice questions -------------------------------------------------------------------------------------------
+
+echo "all lines are "$(ls | wc -l)""
+echo "current path is "$(pwd)""
+
+#today=$(date)
+#mkdir "$today"
+
+HOST=$(hostname)
+echo "$HOST"
+
+read -p "enter the file u want to find the size of : " size
+echo "size using my own script "$(stat "$size" |  grep -i size | cut -f1)"" # better approch will be to use built in stat features like : stat -c %s
+echo "size using stat -c : "$(stat "$size" -c %s)""
+echo "size using wc -c : "$(wc -c "$size")"" # another alternate method is this
+
+cp -n notes.txt "notes.txt$(date "+%Y%m%d-%H%M%S")" #copy file into another file along with an attached timestamp
+
+echo "total running processes with my script : "$(ps | tail -n +2 | wc -l)"" # counts the total lines and also exludes the header line, or u can use arthmetic substituition for it
+echo "total processes using --no-header command : "$(ps --no-header | wc -l)""
+
+curr=$(whoami)
+echo "current user is : "/home/${curr}""
+
+unset name
+echo "$name"
