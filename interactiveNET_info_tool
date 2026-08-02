@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# -------------------------------problems---------------------------------------- #
+## 1) [[ ]] this is for testing expressions only and doesnt run commands.
+## 2) nothing after exit works
+## 3) no spaces
+## 4) $(( )) this returns a value that bash tries to execute immediately
+
+echo " ==== interactive network tool ==== "
+read -p "enter hostname : " query
+
+if [[ -z $query ]];then
+	echo "this field cant be empty!"
+	exit 1
+elif getent hosts "$query" > /dev/null ;then
+	echo "resolved IP : "
+	getent hosts "$query"
+	dnsans="yes"
+else
+	echo "name resolution failed"
+	dnsans="no"
+fi
+
+read -p "do u also want to check connectivity of that ip?? y/n" asnwer
+ip=$(getent hosts "$query" | cut -d' ' -f1)
+if [[ $asnwer == y ]];then
+	if ping "$ip" | grep "100%" > /dev/null ; then
+		echo "host is unreachable"
+		ping -c 2 $ip
+		pingans="no"
+	else
+		echo "host is reachable"
+		ping -c 2 $ip
+		pingans="yes"
+	fi
+elif [[ $asnwer == n ]];then
+	exit 0
+else
+	echo "inavlid asnwer!!"
+fi
+
+echo "listening tcp entries : "
+echo $(( $(cat /proc/net/tcp | wc -l) -1 ))
+
+echo "summary"
+echo "host : $query"
+echo "resolved : $dnsans"
+echo "reachable : $pingans"
+echo "tcp entries : $(( $(cat /proc/net/tcp | wc -l) -1 ))"
