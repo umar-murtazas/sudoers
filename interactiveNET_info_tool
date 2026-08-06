@@ -4,7 +4,7 @@
 ## 1) [[ ]] this is for testing expressions only and doesnt run commands.
 ## 2) nothing after exit works
 ## 3) no spaces
-## 4) $(( )) this returns a value that bash tries to execute immediately
+## 4) $(( )) this returns output that bash tries to execute immediately
 
 echo " ==== interactive network tool ==== "
 read -p "enter hostname : " query
