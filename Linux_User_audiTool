@@ -3,6 +3,8 @@
 
 ## 1) grep usese files only and we cannot use variables in it
 ## 2) use cmd substituion around a whole pipe instead of echo "hi" | a=$(wc -c)
+## 3) use grep -v for AND since extended regex doesnt provide any.
+## 4) use cut directly instead of using cat first then cut
 
 echo -e "  ========linux user audit tool=========  \n"
 printf "names%s      UID%s      shell\n"
@@ -10,7 +12,7 @@ printf "===%s        ===%s      ===\n"
 
 superusers=""
 
-for users in $(cat /etc/passwd | cut -d: -f1,3,7)
+for users in $(cut -d: -f1,3,7 /etc/passwd) #4
 do
 	echo -n "$(echo $users | cut -d: -f1)      "
 	echo -n "$(echo $users | cut -d: -f2)      "
@@ -24,12 +26,12 @@ done
 
 echo "total users : "$(cat /etc/passwd | wc -l)""
 
-if sorted_users=$(grep -vE "login|false" /etc/passwd | cut -d: -f1);then
+if sorted_users=$(grep -vE "login|false" /etc/passwd | cut -d: -f1);then #1
 	echo "accounts we can log in : "$sorted_users""
-	total=$(echo "$sorted_users" | wc -w)
+	total=$(echo "$sorted_users" | wc -w) #2
 	echo "interactive users : $total"
 fi
 
-if unhuman=$(grep -E "login|false" /etc/passwd | wc -l);then
+if unhuman=$(grep -E "login|false" /etc/passwd | wc -l);then #3
 	echo "non interactive users : $unhuman"
 fi

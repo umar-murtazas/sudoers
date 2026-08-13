@@ -5,6 +5,10 @@
 ## 2) nothing after exit works
 ## 3) no spaces
 ## 4) $(( )) this returns output that bash tries to execute immediately
+## 5) getent hosts doesnt comapre the exit status, it checks if exit code == 0 then run the "then" part else skip this condition.
+# ------------------------------improvements-------------------------------------- #
+## i) host can also be reachable if out packet loss is any thing below 100%
+## ii) to display tcp sockets "ss -tl" command is better then parsing the output of "/proc/net/tcp"
 
 echo " ==== interactive network tool ==== "
 read -p "enter hostname : " query
@@ -12,7 +16,7 @@ read -p "enter hostname : " query
 if [[ -z $query ]];then
 	echo "this field cant be empty!"
 	exit 1
-elif getent hosts "$query" > /dev/null ;then
+elif getent hosts "$query" > /dev/null ;then     # 5
 	echo "resolved IP : "
 	getent hosts "$query"
 	dnsans="yes"
@@ -24,7 +28,7 @@ fi
 read -p "do u also want to check connectivity of that ip?? y/n" asnwer
 ip=$(getent hosts "$query" | cut -d' ' -f1)
 if [[ $asnwer == y ]];then
-	if ping "$ip" | grep "100%" > /dev/null ; then
+	if ping -c 2 "$ip" | grep "100%" > /dev/null ; then    # i
 		echo "host is unreachable"
 		ping -c 2 $ip
 		pingans="no"
@@ -40,7 +44,7 @@ else
 fi
 
 echo "listening tcp entries : "
-echo $(( $(cat /proc/net/tcp | wc -l) -1 ))
+echo $(( $(cat /proc/net/tcp | wc -l) -1 ))    # ii
 
 echo "summary"
 echo "host : $query"
