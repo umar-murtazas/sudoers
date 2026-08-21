@@ -6,7 +6,7 @@
 ## 3) use grep -v for AND since extended regex doesnt provide any.
 ## 4) use cut directly instead of using cat first then cut
 
-echo -e "  ========linux user audit tool=========  \n"
+echo -e "  ========linux user audit tool=========  \n"		# -e tells how to read escape characters
 printf "names%s      UID%s      shell\n"
 printf "===%s        ===%s      ===\n"
 
@@ -14,7 +14,7 @@ superusers=""
 
 for users in $(cut -d: -f1,3,7 /etc/passwd) #4
 do
-	echo -n "$(echo $users | cut -d: -f1)      "
+	echo -n "$(echo $users | cut -d: -f1)      " 		# -n stops newline, now both of these echo will be printed in the same line.
 	echo -n "$(echo $users | cut -d: -f2)      "
 	echo "$(echo $users | cut -d: -f3)"
 	uid=$(echo $users | cut -d: -f2)
