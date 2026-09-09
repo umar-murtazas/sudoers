@@ -1,0 +1,57 @@
+#!/bin/bash
+
+##
+##
+##
+##
+
+current_user(){
+	echo "[+] current user : $(whoami)"
+}
+
+root_exist(){
+	if getent passwd | grep root > /dev/null;then 	#2
+		echo "root exists"
+	else
+		echo "root doesnt exist"
+	fi
+}
+
+superusers(){
+	if getent passwd | grep -w 0;then    	#5
+		echo "superuser accounts found : $(getent passwd | grep -w 0  | grep -v root| cut -d':' -f1)"
+	else
+		echo "none"
+	fi
+}
+
+check_ssh(){
+	ssh_status=$(systemctl is-active ssh) 	#3
+		echo "ssh service is "$ssh_status""
+}
+
+check_failed_logins(){
+	if grep "failure" /var/log/auth.log > /dev/null;then
+		failures=$(grep "failure" /var/log/auth.log | wc -l)
+		unauth_user=$(grep "failure" /var/log/auth.log | grep -o 'ruser=[^ ]*' | cut -d'=' -f2)      #1
+		echo "[+] "$failures" Authentication logs found."
+		echo "user who attempted this : "$unauth_user""
+		echo "should we eliminate them?  :)"
+	else
+		echo "[-] no Authentication logs founds"
+	fi
+}
+
+report(){
+	echo "==========================================="
+	echo "		LINUX SECURITY CHECKER		 "
+	echo "==========================================="
+	printf "\n"    		#4
+	current_user
+	root_exist
+	superusers
+	check_ssh
+	check_failed_logins
+}
+
+report
