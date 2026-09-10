@@ -1,16 +1,18 @@
 #!/bin/bash
 
-##
-##
-##
-##
+# --------------------------------- things used -----------------------------------------------
+## 1) "getent passwd" returns the entire /etc/passwd file to us.
+## 2) "grep -w" matches the exact character inside that file. not the sub-chars.
+## 3) "systemctl is-active ssh" tells wether the ssh is active in the computer or not.
+## 4) "grep -o [^ ]*" means, everything except the space and * repeats any number of chars inside those chars. -o only shows the matched character.
+## 5) "printf "\n"" enforces a newline here.
 
 current_user(){
 	echo "[+] current user : $(whoami)"
 }
 
 root_exist(){
-	if getent passwd | grep root > /dev/null;then 	#2
+	if getent passwd | grep root > /dev/null;then 	#1
 		echo "root exists"
 	else
 		echo "root doesnt exist"
@@ -18,10 +20,15 @@ root_exist(){
 }
 
 superusers(){
-	if getent passwd | grep -w 0;then    	#5
-		echo "superuser accounts found : $(getent passwd | grep -w 0  | grep -v root| cut -d':' -f1)"
+	if getent passwd | grep -w 0 > /dev/null;then    	#2
+		user_exist=$(getent passwd | grep -v root | grep -w 0 | cut -d':' -f1)
+		if [ -z "$user_exist" ];then
+			echo "superuser accounts not found !!"
+		else
+			echo "superusers accounts found : "$user_exist""
+		fi
 	else
-		echo "none"
+		echo "not even root exists!!"
 	fi
 }
 
@@ -33,7 +40,7 @@ check_ssh(){
 check_failed_logins(){
 	if grep "failure" /var/log/auth.log > /dev/null;then
 		failures=$(grep "failure" /var/log/auth.log | wc -l)
-		unauth_user=$(grep "failure" /var/log/auth.log | grep -o 'ruser=[^ ]*' | cut -d'=' -f2)      #1
+		unauth_user=$(grep "failure" /var/log/auth.log | grep -o 'ruser=[^ ]*' | cut -d'=' -f2)      #4
 		echo "[+] "$failures" Authentication logs found."
 		echo "user who attempted this : "$unauth_user""
 		echo "should we eliminate them?  :)"
@@ -46,7 +53,7 @@ report(){
 	echo "==========================================="
 	echo "		LINUX SECURITY CHECKER		 "
 	echo "==========================================="
-	printf "\n"    		#4
+	printf "\n"    		#5
 	current_user
 	root_exist
 	superusers
