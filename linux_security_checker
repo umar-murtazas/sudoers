@@ -7,6 +7,9 @@
 ## 4) "grep -o [^ ]*" means, everything except the space and * repeats any number of chars inside those chars. -o only shows the matched character.
 ## 5) "printf "\n"" enforces a newline here.
 
+# ------------------------------------problems-----------------------------------------
+## i) to AND between multiple grep patterns always pipe them "cmd | grep | grep" will produce an AND of them.
+
 current_user(){
 	echo "[+] current user : $(whoami)"
 }
@@ -21,7 +24,7 @@ root_exist(){
 
 superusers(){
 	if getent passwd | grep -w 0 > /dev/null;then    	#2
-		user_exist=$(getent passwd | grep -v root | grep -w 0 | cut -d':' -f1)
+		user_exist=$(getent passwd | grep -v root | grep -w 0 | cut -d':' -f1) 	#i
 		if [ -z "$user_exist" ];then
 			echo "superuser accounts not found !!"
 		else
